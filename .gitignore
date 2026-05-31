@@ -29,3 +29,8 @@ coverage.xml
 *.pdf
 resume_report.pdf
 analyses.db
+backend/data/
+.env
+.vscode/
+.DS_Store
+.idea/
