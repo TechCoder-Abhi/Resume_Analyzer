@@ -1,0 +1,70 @@
+{% extends 'layout.html' %}
+
+{% block title %}History{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <div class="history-toolbar">
+        <a href="/" class="btn-secondary">Back to Analyzer</a>
+        <a href="/dashboard" class="btn-secondary">Dashboard</a>
+        <a href="/insights" class="btn-secondary">Insights</a>
+        <a href="/clear_history" class="btn-secondary" style="background:rgba(251,113,133,0.12); border-color:rgba(251,113,133,0.24); color:#fecdd3;" onclick="return confirm('Are you sure you want to clear all history?')">Clear History</a>
+    </div>
+
+    {% if analyses %}
+    <div class="history-list">
+        {% for analysis in analyses %}
+        <article class="results-card history-card">
+            <div class="card-header">
+                <h2>📊 Analysis #{{ analysis.id }}</h2>
+                <p>{{ analysis.timestamp }}</p>
+            </div>
+
+            <div class="score-section history-score">
+                <div class="score-circle" style="background: conic-gradient(#22c55e 0% {{ analysis.match }}%, rgba(255,255,255,0.08) {{ analysis.match }}% 100%)">
+                    <span class="score-number">{{ analysis.match }}%</span>
+                </div>
+                <div class="score-info">
+                    <h3>Match score</h3>
+                    <p>Based on the weighted skills detected in the uploaded resume.</p>
+                </div>
+            </div>
+
+            {% if analysis.matched %}
+            <div class="skills-section">
+                <h3>✅ Matched Skills</h3>
+                <div class="skills matched">
+                    {% for skill in analysis.matched %}
+                    <span class="skill-tag">{{ skill }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% if analysis.missing %}
+            <div class="skills-section">
+                <h3>❌ Missing Skills</h3>
+                <div class="skills missing">
+                    {% for skill in analysis.missing %}
+                    <span class="skill-tag">{{ skill }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="download-section" style="text-align:left; background:transparent;">
+                <form id="delete-form-{{ analysis.id }}" method="POST" action="/delete/{{ analysis.id }}" style="display:inline">
+                    <button type="button" class="btn-secondary" onclick="confirmDelete({{ analysis.id }})" style="background:rgba(251,113,133,0.12); color:#fecdd3; border-color:rgba(251,113,133,0.24);">Delete analysis</button>
+                </form>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-error">
+        <span class="alert-icon">📭</span>
+        No analyses found. Perform some analyses first.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

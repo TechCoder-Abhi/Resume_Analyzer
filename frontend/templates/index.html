@@ -1,0 +1,124 @@
+{% extends 'layout.html' %}
+
+{% block title %}Analyzer{% endblock %}
+
+{% block content %}
+<div class="main-content home-grid">
+    <section class="intro-panel">
+        <div class="intro-copy">
+            <span class="eyebrow">Resume Intelligence</span>
+            <h2>Assess candidate fit quickly — clear, actionable results.</h2>
+            <p>Upload a resume (PDF or DOCX) and paste the role description. The analyzer highlights matched skills, identifies gaps, and generates a concise report you can share with hiring teams.</p>
+        </div>
+        <div class="stats-row">
+            <div class="stat-card">
+                <span class="stat-label">Fast scan</span>
+                <strong>PDF + DOCX</strong>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Insightful output</span>
+                <strong>Matched + missing skills</strong>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Exportable</span>
+                <strong>Download report</strong>
+            </div>
+        </div>
+    </section>
+
+    <form method="POST" enctype="multipart/form-data" class="upload-card glass-card">
+        <div class="card-header">
+            <h2>📤 Upload & Analyze</h2>
+            <p>Use a real resume file and a role description to produce a match score.</p>
+        </div>
+        <div class="form-group">
+            <label class="label">Resume file</label>
+            <div class="file-input-wrapper">
+                <input type="file" name="resume" id="resume" accept=".pdf,.docx" required onchange="updateFileName()">
+                <label for="resume" class="file-label">
+                    <span class="file-icon">📎</span>
+                    Choose PDF or DOCX file
+                </label>
+            </div>
+            <p class="field-help">Selected file name appears after choosing a file. Uploaded files are processed locally by the server.</p>
+        </div>
+
+        <div class="form-group">
+            <label class="label">Job description</label>
+            <textarea name="job" placeholder="Paste the job description here..." required>{{ job_desc or '' }}</textarea>
+        </div>
+
+        <div class="quick-actions">
+            <button type="button" class="chip-action" onclick="document.querySelector('textarea[name=job]').value='Python developer — Flask, SQL, Docker, AWS.'">Backend sample</button>
+            <button type="button" class="chip-action" onclick="document.querySelector('textarea[name=job]').value='Frontend developer — React, TypeScript, HTML, CSS, accessibility.'">Frontend sample</button>
+            <button type="button" class="chip-action" onclick="document.querySelector('textarea[name=job]').value='Data scientist — Python, pandas, numpy, ML pipelines.'">Data sample</button>
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn-primary">
+                <span class="btn-icon">🔍</span>
+                Analyze Resume
+            </button>
+            <button type="button" onclick="document.querySelector('textarea[name=job]').value=''" class="btn-secondary">
+                <span class="btn-icon">↺</span>
+                Reset
+            </button>
+        </div>
+    </form>
+
+    {% if error %}
+    <div class="alert alert-error">
+        <span class="alert-icon">⚠️</span>
+        {{ error }}
+    </div>
+    {% endif %}
+
+    {% if result %}
+    <div class="results-card">
+        <div class="card-header">
+            <h2>📊 Analysis Results</h2>
+        </div>
+
+        <div class="score-section">
+            <div class="score-circle" style="background: conic-gradient(#10b981 0% {{ result.match }}%, #e5e7eb {{ result.match }}% 100%)">
+                <span class="score-number">{{ result.match }}%</span>
+            </div>
+            <div class="score-info">
+                <h3>Match Score</h3>
+                <p>Based on required skills</p>
+            </div>
+        </div>
+
+        {% if result.matched %}
+        <div class="skills-section">
+            <h3>✅ Matched Skills</h3>
+            <div class="skills matched">
+                {% for skill in result.matched %}
+                <span class="skill-tag">{{ skill }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if result.missing %}
+        <div class="skills-section">
+            <h3>❌ Missing Skills</h3>
+            <div class="skills missing">
+                {% for skill in result.missing %}
+                <span class="skill-tag">{{ skill }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="download-section">
+            <a href="/download" class="download-btn">
+                <span class="btn-icon">📥</span>
+                Download report (PDF)
+            </a>
+            <p style="margin-top:10px; color:var(--muted); font-size:0.9rem;">Files are processed on the server. Remove sensitive personal data before sharing publicly.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

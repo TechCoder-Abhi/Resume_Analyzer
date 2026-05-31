@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="main-content dashboard-grid">
+    <section class="metric-grid">
+        <div class="metric-card accent-a">
+            <span class="metric-label">Total analyses</span>
+            <strong>{{ total }}</strong>
+            <p>All resume comparisons saved in the database.</p>
+        </div>
+        <div class="metric-card accent-b">
+            <span class="metric-label">Average match</span>
+            <strong>{{ avg }}%</strong>
+            <p>Overall compatibility across the saved history.</p>
+        </div>
+        <div class="metric-card accent-c">
+            <span class="metric-label">Action hint</span>
+            <strong>Explore insights</strong>
+            <p>Open the Insights page for charts and trend analysis.</p>
+        </div>
+    </section>
+
+    <section class="results-card">
+        <div class="card-header">
+            <h2>📈 Dashboard summary</h2>
+            <p>Use this view to monitor your analysis volume and match trend.</p>
+        </div>
+        <div class="dashboard-body">
+            <div class="mini-empty-state">
+                <div class="mini-icon">📊</div>
+                <h3>Need richer reporting?</h3>
+                <p>Open Insights for charts, top skills, and recent performance trends.</p>
+                <a href="/insights" class="btn-primary inline-btn">Open Insights</a>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

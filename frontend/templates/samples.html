@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block title %}Samples{% endblock %}
+
+{% block content %}
+<div class="main-content sample-grid">
+    <section class="results-card">
+        <div class="card-header">
+            <h2>🧪 Sample job descriptions</h2>
+            <p>Use these quick examples to test the analyzer.</p>
+        </div>
+        <div class="sample-list">
+            {% for sample in samples %}
+            <article class="sample-card">
+                <div>
+                    <h3>{{ sample.title }}</h3>
+                    <p>{{ sample.summary }}</p>
+                </div>
+                <textarea readonly>{{ sample.text }}</textarea>
+                <a class="btn-primary inline-btn" href="/?sample={{ sample.text|urlencode }}">Use this sample</a>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Resume Analyzer{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+    <meta name="description" content="Resume Analyzer — compare resumes to job descriptions and generate a compatibility report.">
+    <script>
+        function confirmDelete(id) {
+            if (confirm('Delete this analysis?')) {
+                const form = document.getElementById('delete-form-' + id);
+                if (form) form.submit();
+            }
+        }
+        function updateFileName() {
+            const input = document.getElementById('resume');
+            const label = document.querySelector('label[for="resume"]');
+            if (!input || !label) return;
+            const file = input.files && input.files[0];
+            if (file) {
+                label.textContent = file.name;
+            } else {
+                label.textContent = 'Choose PDF or DOCX file';
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container">
+    <header class="header">
+        <div class="hero-shell">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <div>
+                    <h1>Resume Analyzer</h1>
+                    <p class="subtitle">A sharper way to compare resumes with job descriptions</p>
+                </div>
+            </div>
+            <div class="hero-meta">
+                <span class="meta-pill">Upload</span>
+                <span class="meta-pill">Analyze</span>
+                <span class="meta-pill">Track</span>
+            </div>
+        </div>
+        <nav class="top-nav">
+            <a href="/" class="nav-chip">Analyzer</a>
+            <a href="/dashboard" class="nav-chip">Dashboard</a>
+            <a href="/insights" class="nav-chip">Insights</a>
+            <a href="/history" class="nav-chip">History</a>
+            <a href="/samples" class="nav-chip">Samples</a>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</div>
+</body>
+    <footer style="margin-top:32px; text-align:center; color:var(--muted); font-size:0.9rem;">
+        <div style="padding:18px 0;">
+            <span>Resume Analyzer • v1.0</span>
+            <span style="margin:0 8px;">|</span>
+            <a href="https://github.com/TechCoder-Abhi" style="color:var(--muted); text-decoration:none;">GitHub</a>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,119 @@
+{% extends 'layout.html' %}
+
+{% block title %}Insights{% endblock %}
+
+{% block content %}
+<div class="main-content insights-grid">
+    <section class="results-card">
+        <div class="card-header">
+            <h2>📊 Insights</h2>
+            <p>Charts and trends based on your saved analyses.</p>
+        </div>
+        <div class="insights-canvas-grid">
+            <div class="chart-card">
+                <h3>Recent match trend</h3>
+                <canvas id="trendChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Top matched skills</h3>
+                <canvas id="skillsChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <section class="metric-grid compact">
+        <div class="metric-card accent-a">
+            <span class="metric-label">Analyses</span>
+            <strong>{{ total }}</strong>
+            <p>Saved resume comparisons.</p>
+        </div>
+        <div class="metric-card accent-b">
+            <span class="metric-label">Average</span>
+            <strong>{{ avg }}%</strong>
+            <p>Mean match percentage.</p>
+        </div>
+        <div class="metric-card accent-c">
+            <span class="metric-label">Best score</span>
+            <strong>{{ best }}%</strong>
+            <p>Highest match in history.</p>
+        </div>
+        <div class="metric-card accent-d">
+            <span class="metric-label">Latest run</span>
+            <strong>{{ latest.match if latest else 0 }}%</strong>
+            <p>{{ latest.timestamp if latest else 'No analyses yet' }}</p>
+        </div>
+    </section>
+
+    {% if top_skills %}
+    <section class="results-card">
+        <div class="card-header">
+            <h2>🏆 Most frequent matches</h2>
+            <p>Skills that keep showing up across successful matches.</p>
+        </div>
+        <div class="skills-section">
+            <div class="skills matched">
+                {% for skill, count in top_skills %}
+                <span class="skill-tag skill-pill">{{ skill }} <em>{{ count }}</em></span>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    {% endif %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+    const labels = {{ recent_labels|tojson }};
+    const scores = {{ recent_scores|tojson }};
+    const topSkills = {{ top_skills|tojson }};
+
+    const trendCanvas = document.getElementById('trendChart');
+    if (trendCanvas) {
+        new Chart(trendCanvas, {
+            type: 'line',
+            data: {
+                labels: labels.length ? labels : ['No data'],
+                datasets: [{
+                    label: 'Match %',
+                    data: scores.length ? scores : [0],
+                    borderColor: '#7c3aed',
+                    backgroundColor: 'rgba(124, 58, 237, 0.16)',
+                    fill: true,
+                    tension: 0.35,
+                    pointRadius: 4,
+                    pointBackgroundColor: '#7c3aed'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true, suggestedMax: 100 }
+                }
+            }
+        });
+    }
+
+    const skillsCanvas = document.getElementById('skillsChart');
+    if (skillsCanvas) {
+        new Chart(skillsCanvas, {
+            type: 'doughnut',
+            data: {
+                labels: topSkills.length ? topSkills.map(item => item[0]) : ['No data'],
+                datasets: [{
+                    data: topSkills.length ? topSkills.map(item => item[1]) : [1],
+                    backgroundColor: ['#0f766e', '#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#475569', '#f59e0b']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}
